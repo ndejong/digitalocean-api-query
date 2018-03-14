@@ -19,9 +19,11 @@ Supports the following Digital Ocean (v2) API calls for query
  * [tags](https://developers.digitalocean.com/documentation/v2/#tags)
  * [volumes](https://developers.digitalocean.com/documentation/v2/#block-storage)
 
-## Set your environment variable first
+## Set your environment variable before use
 Set either `DO_TOKEN` or `TF_VAR_do_token` to your Digital Ocean API key value
 before using `digitalocean-api-query` since requests all require authentication.
+The `TF_VAR_do_token` environment variable is designed to be handy if you are 
+also using Terraform among your toolset.
 
 For example:
 ```bash
@@ -31,23 +33,29 @@ For example:
 ## Example requests
 
 obtain droplet data using 'jq' to pretty-print the response data
-```
+```bash
  $ digitalocean-api-query droplets | jq .
 ```
 
 obtain a list of droplet.id using 'jq' to filter the response data
-```
+```bash
  $ digitalocean-api-query droplets | jq .droplets[].id
 ```
 
 obtain a list of volume.id slugs using 'jq' to filter the response data
-```
+```bash
  $ digitalocean-api-query volumes | jq .volumes[].id
 ```
 
 obtain a list of region slugs using 'jq' to filter the response data
-```
+```bash
  $ digitalocean-api-query regions | jq .regions[].slug
 ```
+
+## Install
+
+digitalocean-api-query is a straight-forward bash script so you can simply 
+download directly and place somewhere useful to you - the sha256sum value is 
+available to confirm integrity, use it.
 
 
