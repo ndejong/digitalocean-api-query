@@ -1,0 +1,75 @@
+#!/bin/bash
+
+if [ -z ${DO_TOKEN} ] && [ ! -z ${TF_VAR_do_token} ]; then
+    DO_TOKEN=${TF_VAR_do_token}
+elif [ -z ${DO_TOKEN} ] && [ -z ${TF_VAR_do_token} ]; then
+    echo 'ERROR: Set either DO_TOKEN or TF_VAR_do_token environment variable with your Digital Ocean apikey value before use.'
+    exit 0
+fi
+
+# doapi_main
+# =============================================================================
+function doapi_main() {
+
+    requested_call=${1}
+    supported_calls=( 'account' 'account/keys' 'actions' 'certificates' 'domains' 'droplets' 'firewalls' 'floating_ips' 'images' 'load_balancers' 'regions' 'sizes' 'tags' 'volumes' )
+
+    # https://stackoverflow.com/questions/1527049/join-elements-of-an-array
+    function join_array {
+        local delim=' | '
+        printf "%s" "${@/#/$delim}"
+    }
+
+    if [ -z ${requested_call} ]; then
+        supported_calls_string=`join_array ${supported_calls[@]}`
+
+        echo ""
+        echo "Usage: `basename ${0}` [ ${supported_calls_string:3} ]"
+        echo ""
+        echo "Example: obtain droplet data using 'jq' to pretty-print the response data"
+        echo " $ `basename ${0}` droplets | jq ."
+        echo ""
+        echo "Example: obtain a list of droplet.id using 'jq' to filter the response data"
+        echo " $ `basename ${0}` droplets | jq .droplets[].id"
+        echo ""
+        exit 0
+    fi
+
+    request_called=0
+    for supported_call in "${supported_calls[@]}"; do
+        if [ ${request_called} -eq 0 ] && [ ${1} == ${supported_call} ]; then
+            doapi_basic ${supported_call}
+            request_called=1
+        fi
+    done
+
+    if [ ${request_called} -eq 0 ]; then
+        echo 'ERROR: call requested is not supported'
+        exit 1
+    fi
+}
+
+# doapi_basic
+# =============================================================================
+function doapi_basic() {
+    call="${1}"
+    limit="${2-1000}"
+    doapi_http_request 'GET' "https://api.digitalocean.com/v2/${call}?per_page=${limit}"
+}
+
+# doapi_http_request
+# =============================================================================
+function doapi_http_request() {
+
+    doapi_request_method=${1}
+    doapi_request_url=${2}
+
+    echo `curl \
+        --silent \
+        --request "${doapi_request_method}" \
+        --header "Content-Type: application/json" \
+        --header "Authorization: Bearer ${DO_TOKEN}" \
+        "${doapi_request_url}"`
+}
+
+doapi_main "${@}"
