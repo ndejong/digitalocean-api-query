@@ -58,4 +58,8 @@ digitalocean-api-query is a straight-forward bash script so you can simply
 download directly and place somewhere useful to you - the sha256sum value is 
 available to confirm integrity, use it.
 
+## Authors
+This code is managed by [Verb Networks](https://github.com/verbnetworks).
 
+## License
+Apache 2 Licensed. See LICENSE file for full details.
