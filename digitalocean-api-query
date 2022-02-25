@@ -18,7 +18,33 @@ fi
 function doapi_main() {
 
     requested_call=${1}
-    supported_calls=( 'account' 'account/keys' 'actions' 'certificates' 'domains' 'droplets' 'firewalls' 'floating_ips' 'images' 'load_balancers' 'regions' 'sizes' 'tags' 'volumes' )
+    supported_calls=(
+      'account'               # https://docs.digitalocean.com/reference/api/api-reference/#tag/Account
+      'account/keys'          # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_all_keys
+      'actions'               # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_all_actions
+      'apps'                  # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_apps
+      'customers/my/balance'  # https://docs.digitalocean.com/reference/api/api-reference/#operation/get_customer_balance
+      'customers/my/invoices' # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_invoices
+      'volumes'               # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_all_volumes
+      'cdn/endpoints'         # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_cdn_endpoints
+      'certificates'          # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_certificates
+      'registry'              # https://docs.digitalocean.com/reference/api/api-reference/#operation/get_registry
+      'databases'             # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_database_clusters
+      'domains'               # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_all_domains
+      'droplets'              # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_all_droplets
+      'firewalls'             # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_firewalls
+      'floating_ips'          # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_floating_ips
+      'images'                # https://docs.digitalocean.com/reference/api/api-reference/#operation/get_images_list
+      'kubernetes/clusters'   # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_all_kubernetes_clusters
+      'load_balancers'        # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_all_load_balancers
+      'monitoring/alerts'     # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_alert_policies
+      'projects'              # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_projects
+      'regions'               # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_all_regions
+      'sizes'                 # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_all_sizes
+      'snapshots'             # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_all_snapshots
+      'tags'                  # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_all_tags
+      'vpcs'                  # https://docs.digitalocean.com/reference/api/api-reference/#operation/list_vpcs
+    )
 
     # https://stackoverflow.com/questions/1527049/join-elements-of-an-array
     function join_array {
@@ -59,7 +85,7 @@ function doapi_main() {
 # =============================================================================
 function doapi_basic() {
     call="${1}"
-    limit="${2-1000}"
+    limit="${2-200}"
     doapi_http_request 'GET' "https://api.digitalocean.com/v2/${call}?per_page=${limit}"
 }
 
